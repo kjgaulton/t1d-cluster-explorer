@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Explorer | T1D cluster explorer</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='11' cy='13' r='7' fill='%233A3F9E'/><circle cx='21' cy='19' r='7' fill='%23C2457E' fill-opacity='.85'/></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Spectral:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <script src="/vendor/plotly.min.js" defer></script>
+  <script src="/app.js" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <a class="site-brand" href="/">T1D cluster explorer</a>
+    <nav aria-label="Main">
+      <ul>
+        <li><a href="/">Home</a></li>
+        <li><a href="/explore" aria-current="page">Explorer</a></li>
+        <li><a href="/#t1grs">About T1GRS</a></li>
+        <li><a href="/#clusters">Clusters</a></li>
+        <li><a href="/#methods">Methods</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <div class="masthead">
+    <div class="brand">
+      <h1>Explore clusters</h1>
+      <p class="dataset-meta" id="dataset-meta">Loading datasets…</p>
+    </div>
+    <label class="dataset-picker">
+      <span>Dataset</span>
+      <select id="dataset"></select>
+    </label>
+  </div>
+
+  <div class="workspace">
+    <aside class="controls" aria-label="Plot settings">
+      <fieldset>
+        <legend>View</legend>
+        <label>Show this table as <select id="view">
+          <option value="embedding">Embedding scatter plot</option>
+          <option value="forest">Forest plot</option>
+          <option value="table">Table only</option>
+        </select></label>
+      </fieldset>
+
+      <div id="embedding-controls" class="control-group">
+        <fieldset>
+          <legend>Embedding</legend>
+          <label>Horizontal axis <select id="x"></select></label>
+          <label>Vertical axis <select id="y"></select></label>
+        </fieldset>
+        <fieldset>
+          <legend>Clusters</legend>
+          <label>Color points by <select id="color"></select></label>
+          <label>Compare clusters across <select id="compare"></select></label>
+          <label>Label on hover <select id="hover"></select></label>
+        </fieldset>
+        <fieldset>
+          <legend>Display</legend>
+          <label>Point size <input type="range" id="size" min="1" max="12" value="4"></label>
+          <label>Opacity <input type="range" id="opacity" min="0.1" max="1" step="0.05" value="0.75"></label>
+          <label class="check"><input type="checkbox" id="proportions" checked> Show composition as percentages</label>
+        </fieldset>
+      </div>
+
+      <div id="forest-controls" class="control-group" hidden>
+        <fieldset>
+          <legend>Effect sizes</legend>
+          <label>One row per <select id="f-label"></select></label>
+          <label>Estimate <select id="f-est"></select></label>
+          <label>Lower interval <select id="f-lower"></select></label>
+          <label>Upper interval <select id="f-upper"></select></label>
+          <label>Standard error <select id="f-se"></select></label>
+          <p class="hint">Used only when no interval columns are chosen.</p>
+          <label>P-value <select id="f-p"></select></label>
+        </fieldset>
+        <fieldset>
+          <legend>Grouping</legend>
+          <label>Color by <select id="f-group"></select></label>
+          <label>Split into panels by <select id="f-panel"></select></label>
+        </fieldset>
+        <fieldset>
+          <legend>Display</legend>
+          <label class="check"><input type="checkbox" id="f-ratio"> Ratio scale (log axis, reference line at 1)</label>
+          <label class="check"><input type="checkbox" id="f-sig" checked> Hollow markers when p ≥ 0.05</label>
+        </fieldset>
+      </div>
+      <a class="download" id="download" href="#">Download this table</a>
+    </aside>
+
+    <main id="main">
+      <section class="panel scatter-panel" id="scatter-section">
+        <div class="panel-head">
+          <h2 id="scatter-title">Embedding</h2>
+          <p class="note" id="scatter-note"></p>
+        </div>
+        <div id="scatter" class="plot plot-scatter" role="img" aria-label="Scatter plot of the selected embedding"></div>
+      </section>
+
+      <section class="panel" id="composition-section">
+        <div class="panel-head">
+          <h2 id="composition-title">Cluster composition</h2>
+          <p class="note">Click a legend entry in either chart to hide or show it.</p>
+        </div>
+        <div id="composition" class="plot plot-bar" role="img" aria-label="Bar chart of cluster sizes"></div>
+      </section>
+
+      <section class="panel scatter-panel" id="forest-section" hidden>
+        <div class="panel-head">
+          <h2 id="forest-title">Effect sizes</h2>
+          <p class="note" id="forest-note"></p>
+        </div>
+        <div id="forest" class="plot" role="img" aria-label="Forest plot of effect sizes with confidence intervals"></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head table-head">
+          <h2>Rows</h2>
+          <input type="search" id="search" placeholder="Filter rows" aria-label="Filter rows">
+        </div>
+        <div class="table-wrap"><table id="table"><thead></thead><tbody></tbody></table></div>
+        <div class="pager">
+          <button type="button" id="prev">Previous</button>
+          <span id="page-info"></span>
+          <button type="button" id="next">Next</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <div class="empty" id="empty" hidden>
+    <h2>No result tables found</h2>
+    <p>Add CSV or TSV files to the data directory on the server, then reload this page.</p>
+    <p class="note" id="empty-dir"></p>
+  </div>
+  <div class="toast" id="toast" role="alert" hidden></div>
+</body>
+</html>

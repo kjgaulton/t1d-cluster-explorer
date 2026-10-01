@@ -1,0 +1,12 @@
+# Usage on the server:  HOST_DATA_DIR=/srv/t1d-data docker compose up -d --build
+services:
+  explorer:
+    build: .
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      DATA_DIR: /data            # path inside the container
+    volumes:
+      - ${HOST_DATA_DIR:-/srv/t1d-data}:/data:ro   # server directory, mounted read-only
+    ports:
+      - "127.0.0.1:8000:8000"    # only reachable through nginx on the same machine

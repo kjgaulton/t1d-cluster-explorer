@@ -1,0 +1,5 @@
+fastapi>=0.110
+uvicorn[standard]>=0.29
+pandas>=2.1
+numpy>=1.26
+plotly>=5.20   # only used to serve plotly.min.js locally, so no CDN is needed

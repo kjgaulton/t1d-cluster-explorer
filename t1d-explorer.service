@@ -1,0 +1,15 @@
+# Run without Docker: sudo cp t1d-explorer.service /etc/systemd/system/
+# then: sudo systemctl daemon-reload && sudo systemctl enable --now t1d-explorer
+[Unit]
+Description=T1D cluster explorer
+After=network.target
+
+[Service]
+User=ubuntu
+WorkingDirectory=/home/ubuntu/t1d-cluster-explorer
+EnvironmentFile=/home/ubuntu/t1d-cluster-explorer/.env
+ExecStart=/home/ubuntu/t1d-cluster-explorer/.venv/bin/uvicorn main:app --host 127.0.0.1 --port 8000 --workers 2 --proxy-headers
+Restart=on-failure
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>T1D cluster explorer | Genetic clusters of type 1 diabetes</title>
+  <meta name="description" content="Explore four genetic clusters of type 1 diabetes defined by T1GRS, a machine-learning genetic risk score (McGrail et al., Nature Genetics 2026).">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><circle cx='11' cy='13' r='7' fill='%233A3F9E'/><circle cx='21' cy='19' r='7' fill='%23C2457E' fill-opacity='.85'/></svg>">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Spectral:wght@500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/style.css">
+  <script src="/home.js" defer></script>
+</head>
+<body class="home">
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-header">
+    <a class="site-brand" href="/">T1D cluster explorer</a>
+    <nav aria-label="Main">
+      <ul>
+        <li><a href="/" aria-current="page">Home</a></li>
+        <li><a href="/explore">Explorer</a></li>
+        <li><a href="/#t1grs">About T1GRS</a></li>
+        <li><a href="/#clusters">Clusters</a></li>
+        <li><a href="/#methods">Methods</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main id="main">
+    <!-- ============================================================ intro -->
+    <section class="hero">
+      <div class="hero-text">
+        <h1>Genetic clusters of type&nbsp;1 diabetes</h1>
+        <p class="lede">
+          People with type 1 diabetes don’t all carry the same genetic risk. Using T1GRS, our
+          machine-learning genetic risk score, we grouped people by which risk variants drive
+          their score and found four genetic clusters with different ages of onset and rates
+          of complications. This site lets you explore those clusters.
+        </p>
+        <div class="actions">
+          <a class="button primary" href="/explore">Explore clusters</a>
+          <a class="button" href="#t1grs">Read about T1GRS</a>
+        </div>
+        <p class="hero-cite">
+          From McGrail, Sears, Griffin et al.,
+          <a href="https://www.nature.com/articles/s41588-026-02578-y"><cite>Nature Genetics</cite> (2026)</a>
+        </p>
+      </div>
+
+      <figure class="hero-figure" id="hero-figure" hidden>
+        <a href="/explore" id="hero-link" aria-label="Open this plot in the explorer">
+          <canvas id="hero-canvas" role="img" aria-label="Preview of the cluster embedding"></canvas>
+        </a>
+        <figcaption id="hero-caption"></figcaption>
+      </figure>
+    </section>
+
+    <!-- ============================================================ T1GRS -->
+    <section class="prose-section" id="t1grs" aria-labelledby="t1grs-title">
+      <h2 id="t1grs-title">About T1GRS</h2>
+      <div class="prose">
+        <p>
+          T1GRS is a genetic risk score for type 1 diabetes built with machine learning. Instead of
+          adding up the effect of each risk allele, as earlier scores do, it uses a gradient-boosted
+          model that can learn how variants act together. It considers 199 variants: 97 in the HLA
+          region, which carries the largest share of inherited risk, and 102 at risk loci elsewhere
+          in the genome.
+        </p>
+        <p>
+          The variants come from a genome-wide association and fine-mapping study of 20,355 people
+          with type 1 diabetes and 797,363 without it, which identified 160 risk signals. Compared
+          with the widely used GRS2 score, T1GRS predicted type 1 diabetes more accurately, with the
+          largest gains in people who lack the high-risk HLA-DR3 and DR4 haplotypes. The model also
+          revealed 154 significant interactions between variants, including between HLA and non-HLA
+          loci such as <i>INS</i>.
+        </p>
+      </div>
+      <aside class="callout">
+        <h3>What a cluster means here</h3>
+        <p>
+          A cluster is a group of people whose T1GRS predictions are driven by similar genetic
+          factors. Two people can have the same overall score for different reasons, and the
+          clusters capture those reasons. They describe patterns of inherited risk, are not
+          diagnoses, and should not be used to make decisions about individual care.
+        </p>
+      </aside>
+    </section>
+
+    <!-- ========================================================= clusters -->
+    <section class="prose-section" id="clusters" aria-labelledby="clusters-title">
+      <h2 id="clusters-title">The four clusters</h2>
+      <p class="section-lede">
+        Each cluster is named for the genetic factors that matter most to its members’ scores. The
+        cluster numbers used in the paper are shown in case your tables use them.
+      </p>
+      <dl class="cluster-list">
+        <div>
+          <dt>MHC-driven <span>Cluster 4</span></dt>
+          <dd>Risk is dominated by HLA class II alleles. Along with the MHC-enriched cluster, onset tends to come several years earlier than in the other clusters.</dd>
+        </div>
+        <div>
+          <dt>MHC-enriched <span>Cluster 2</span></dt>
+          <dd>The MHC region still contributes strongly, with HLA class I alleles mattering most. Risk variants are enriched in pancreatic regulatory elements.</dd>
+        </div>
+        <div>
+          <dt>T cell-enriched <span>Cluster 1</span></dt>
+          <dd>The <i>PTPN22</i> locus is the most important feature, and the key variants fall in regulatory elements active in T cells.</dd>
+        </div>
+        <div>
+          <dt>Pancreas-enriched <span>Cluster 3</span></dt>
+          <dd>The <i>INS</i> locus matters most and key variants sit in pancreatic regulatory elements. This cluster has the lowest average T1GRS and the latest onset, yet higher rates of nephropathy, neuropathy and cardiovascular disease, a pattern replicated in the All of Us cohort.</dd>
+        </div>
+      </dl>
+    </section>
+
+    <!-- ========================================================== methods -->
+    <section class="prose-section" id="methods" aria-labelledby="methods-title">
+      <h2 id="methods-title">How the clusters were defined</h2>
+      <ol class="steps">
+        <li>
+          <h3>Genetic discovery</h3>
+          <p>Association and fine-mapping in over 817,000 people of European ancestry identified 160 type 1 diabetes risk signals, including detailed mapping of the HLA region.</p>
+        </li>
+        <li>
+          <h3>Training T1GRS</h3>
+          <p>A CatBoost model was trained on 199 risk variants in 29,746 people (10,107 with type 1 diabetes) and checked with tenfold cross-validation and independent cohorts.</p>
+        </li>
+        <li>
+          <h3>Genetic profiles</h3>
+          <p>For every person, SHAP values measure how much each variant pushed their T1GRS prediction up or down. Together these form their genetic profile.</p>
+        </li>
+        <li>
+          <h3>Clustering</h3>
+          <p>Profiles were reduced with PCA, linked in a nearest-neighbour graph and grouped with Leiden clustering, then displayed with UMAP. People from All of Us were projected onto the clusters to validate them.</p>
+        </li>
+      </ol>
+    </section>
+
+    <!-- ========================================================= datasets -->
+    <section class="prose-section" id="results" aria-labelledby="results-title">
+      <h2 id="results-title">Results on this site</h2>
+      <p class="section-lede">
+        Each table below opens in the explorer. The cluster embedding can be colored by cluster and
+        compared across groups, effect-size tables are drawn as forest plots, and every table can be
+        searched and sorted.
+      </p>
+      <ul class="dataset-list" id="dataset-list">
+        <li class="note">Loading results…</li>
+      </ul>
+    </section>
+
+    <!-- ============================================================ cite -->
+    <section class="prose-section" id="cite" aria-labelledby="cite-title">
+      <h2 id="cite-title">Citation and code</h2>
+      <div class="prose">
+        <p>If you use T1GRS or these results, please cite:</p>
+        <blockquote class="citation" id="citation-text">
+          McGrail, C., Sears, T.J., Griffin, E.N., Ghaben, A.L., Smadbeck, P., Flannick, J.,
+          Kudtarkar, P., Carter, H. &amp; Gaulton, K. Genetic association and machine learning
+          improve the prediction of type 1 diabetes risk. <cite>Nature Genetics</cite> 58,
+          1062–1072 (2026). https://doi.org/10.1038/s41588-026-02578-y
+        </blockquote>
+        <button type="button" class="button copy" id="copy-citation">Copy citation</button>
+        <ul class="link-list">
+          <li><a href="https://www.nature.com/articles/s41588-026-02578-y">Read the paper (open access)</a></li>
+          <li><a href="https://github.com/Gaulton-Lab/t1grs">Run T1GRS on your own data (GitHub)</a></li>
+          <li><a href="https://hub.docker.com/r/kgaultonlab/t1d-grs-analysis-r3-catboost">T1GRS Docker image with the trained models</a></li>
+          <li><a href="https://www.ebi.ac.uk/gwas/studies/GCST90824163">GWAS summary statistics (GWAS Catalog)</a></li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <p>
+      T1GRS was developed at the University of California San Diego.
+      For research use only. Not for clinical decision-making.
+    </p>
+  </footer>
+</body>
+</html>

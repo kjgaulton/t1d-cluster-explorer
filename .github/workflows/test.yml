@@ -1,0 +1,16 @@
+name: tests
+on: [push, pull_request]
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.12" }
+      - run: pip install -r requirements-dev.txt
+      - run: pytest -q
+      - name: Fail if any data files were committed
+        run: |
+          if git ls-files | grep -Ei '\.(csv|tsv|h5ad|rds|parquet|xlsx)(\.gz)?$'; then
+            echo "Data files are tracked in git. Remove them with: git rm --cached <file>"; exit 1
+          fi

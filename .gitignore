@@ -1,0 +1,21 @@
+# ---- Data never goes in the repo ----
+data/
+*.csv
+*.csv.gz
+*.tsv
+*.tsv.gz
+*.txt.gz
+*.h5ad
+*.h5
+*.rds
+*.parquet
+*.xlsx
+
+# ---- Secrets ----
+.env
+
+# ---- Python ----
+__pycache__/
+*.pyc
+.venv/
+.pytest_cache/
